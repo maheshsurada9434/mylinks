@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>mylinks editor</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&display=swap">
+<style>
+  :root { color-scheme: light; --bg: #eef0f4; --surface: #fff; --ink: #14161b; --muted: #5d6270; --line: #dde0e7; --accent: #5b3df5; --accent-ink: #fff; --good: #1f8a5b;
+    --font: "Inter Tight", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  @media (prefers-color-scheme: dark) { :root { color-scheme: dark; --bg: #0f1014; --surface: #181a20; --ink: #eceef3; --muted: #9aa0ae; --line: #2a2d36; --accent: #8f7bff; --accent-ink: #0f1014; --good: #4fc28a; } }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--font); font-size: 15px; line-height: 1.45; -webkit-font-smoothing: antialiased; }
+  button, input, textarea, select { font: inherit; color: inherit; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .layout { display: grid; grid-template-columns: 1fr; min-height: 100vh; }
+  .form { padding: 20px 16px 120px; max-width: 640px; width: 100%; margin: 0 auto; }
+  header.top { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 18px; }
+  header.top h1 { margin: 0; font-size: 22px; letter-spacing: -0.02em; display: flex; align-items: center; gap: 8px; }
+  header.top h1 i { width: 26px; height: 26px; border-radius: 8px; background: var(--accent); display: inline-block; position: relative; }
+  header.top h1 i::after { content: ""; position: absolute; inset: 7px 6px; border: 2.5px solid var(--accent-ink); border-radius: 3px; border-right-color: transparent; transform: rotate(-45deg); }
+  .intro { color: var(--muted); margin: -8px 0 20px; }
+  section.box { background: var(--surface); border-radius: 16px; box-shadow: 0 0 0 1px var(--line); padding: 16px; margin-bottom: 14px; }
+  section.box h2 { margin: 0 0 12px; font-size: 16px; letter-spacing: -0.01em; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .full { grid-column: 1 / -1; }
+  label.f { display: flex; flex-direction: column; gap: 5px; font-size: 13px; font-weight: 600; color: var(--muted); min-width: 0; }
+  input[type=text], input[type=url], input[type=email], input[type=tel], textarea { width: 100%; min-width: 0; height: 42px; border: 1px solid var(--line); background: var(--bg); border-radius: 10px; padding: 0 12px; font-size: 15px; color: var(--ink); font-weight: 400; }
+  textarea { height: auto; min-height: 70px; padding: 10px 12px; resize: vertical; }
+  input:focus, textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 20%, transparent); }
+  .hint { font-size: 12.5px; color: var(--muted); font-weight: 400; }
+  .themes { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  .theme { border: 2px solid transparent; border-radius: 12px; padding: 0; background: none; cursor: pointer; text-align: center; font-size: 12.5px; font-weight: 600; }
+  .theme span { display: block; height: 56px; border-radius: 10px; margin-bottom: 5px; box-shadow: inset 0 0 0 1px rgba(0,0,0,.08); position: relative; overflow: hidden; }
+  .theme span::after { content: ""; position: absolute; left: 18%; right: 18%; top: 38%; height: 12px; border-radius: 6px; background: var(--chip); }
+  .theme[aria-pressed="true"] { border-color: var(--accent); }
+  .link { display: grid; grid-template-columns: 52px 1fr auto; gap: 8px; align-items: start; padding: 12px 0; border-top: 1px solid var(--line); }
+  .link:first-of-type { border-top: none; padding-top: 0; }
+  .link .em { text-align: center; padding: 0; }
+  .link .stack { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+  .link .tools { display: flex; flex-direction: column; gap: 4px; }
+  .mini { width: 34px; height: 34px; border-radius: 9px; border: 1px solid var(--line); background: var(--bg); display: grid; place-items: center; cursor: pointer; font-size: 15px; line-height: 1; }
+  .mini:hover { border-color: var(--ink); }
+  .mini.del:hover { border-color: #d33; color: #d33; }
+  .tog { display: inline-flex; align-items: center; gap: 8px; font-size: 13.5px; color: var(--muted); cursor: pointer; }
+  .tog input { width: 18px; height: 18px; accent-color: var(--accent); }
+  .btn { height: 44px; padding: 0 16px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface); font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; color: var(--ink); }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+  .btn:hover { filter: brightness(1.05); }
+  .bar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 5; padding: 10px 16px max(10px, env(safe-area-inset-bottom)); background: color-mix(in srgb, var(--bg) 90%, transparent); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-top: 1px solid var(--line); display: flex; gap: 8px; justify-content: center; }
+  .bar .btn { flex: 1; max-width: 220px; }
+  .preview { display: none; }
+  .phone { width: 360px; height: 740px; border-radius: 44px; padding: 12px; background: #0b0c0f; box-shadow: 0 30px 70px -30px rgba(0,0,0,.6); }
+  .phone iframe { width: 100%; height: 100%; border: 0; border-radius: 34px; background: #fff; }
+  .mobile-preview { position: fixed; inset: 0; z-index: 10; background: rgba(10,10,14,.6); display: grid; place-items: center; padding: 16px; }
+  .mobile-preview .phone { width: min(360px, 92vw); height: min(740px, 82vh); }
+  .mobile-preview .close { position: absolute; top: max(14px, env(safe-area-inset-top)); right: 14px; }
+  dialog { border: none; border-radius: 20px; max-width: 480px; width: calc(100% - 32px); padding: 22px; background: var(--surface); color: var(--ink); box-shadow: 0 24px 60px -20px rgba(0,0,0,.6); }
+  dialog::backdrop { background: rgba(10,10,14,.5); }
+  dialog h2 { margin: 0 0 8px; font-size: 20px; }
+  dialog ol { padding-left: 20px; line-height: 1.65; margin: 10px 0 18px; }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .toast { position: fixed; left: 50%; bottom: 84px; transform: translate(-50%, 16px); opacity: 0; transition: .2s; background: var(--ink); color: var(--bg); padding: 10px 16px; border-radius: 12px; font-weight: 600; pointer-events: none; z-index: 20; }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); }
+  details summary { cursor: pointer; font-weight: 600; color: var(--accent); margin-top: 12px; }
+  @media (min-width: 980px) {
+    .layout { grid-template-columns: minmax(0, 1fr) 460px; }
+    .form { padding: 32px 32px 120px; margin: 0 0 0 auto; }
+    .preview { display: grid; place-items: center; position: sticky; top: 0; height: 100vh; border-left: 1px solid var(--line); }
+    .bar { left: 0; right: 460px; }
+    [data-act="preview"] { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="layout">
+  <main class="form">
+    <header class="top"><h1><i></i>mylinks editor</h1><button class="btn" data-act="reset" title="Start again from the published page">Reset</button></header>
+    <p class="intro">Fill this in and watch your page update. When it looks right, tap <b>Publish</b> to copy it into your GitHub repo. No coding needed.</p>
+
+    <section class="box"><h2>You</h2><div class="grid">
+      <label class="f full">Name<input type="text" data-k="name" maxlength="60"></label>
+      <label class="f">Handle<input type="text" data-k="handle" maxlength="40" placeholder="yourname"></label>
+      <label class="f">Location<input type="text" data-k="location" maxlength="60" placeholder="City, Country"></label>
+      <label class="f full">Bio<textarea data-k="bio" maxlength="300" placeholder="One or two lines about you"></textarea></label>
+      <label class="f full">Photo<input type="text" data-k="avatar" placeholder="https://… or avatar.jpg"><span class="hint">Paste an image link, or upload <b>avatar.jpg</b> to your repo and type <b>avatar.jpg</b>. Leave empty to show your initials.</span></label>
+    </div></section>
+
+    <section class="box"><h2>Look</h2><div class="themes" id="themes" role="group" aria-label="Theme"></div></section>
+
+    <section class="box"><h2>Links</h2><div id="links"></div>
+      <button class="btn" data-act="add-link" style="margin-top:12px;width:100%">Add a link</button></section>
+
+    <section class="box"><h2>Social profiles</h2><div class="grid" id="socials"></div>
+      <details><summary>More profiles</summary><div class="grid" id="socials-more" style="margin-top:12px"></div></details></section>
+
+    <section class="box"><h2>Extras</h2><div class="grid">
+      <label class="f">UPI ID<input type="text" data-k="upi.id" placeholder="name@bank"><span class="hint">Shows a “Pay via UPI” button that opens GPay, PhonePe or Paytm.</span></label>
+      <label class="f">UPI message<input type="text" data-k="upi.note" placeholder="Buy me a chai"></label>
+      <label class="f full">Featured YouTube video<input type="url" data-k="youtube" placeholder="https://youtu.be/…"></label>
+      <label class="tog full"><input type="checkbox" data-k="contact">Show a “Save contact” button</label>
+    </div></section>
+  </main>
+  <aside class="preview" aria-label="Preview"><div class="phone"><iframe id="frame" title="Live preview"></iframe></div></aside>
+</div>
+
+<div class="bar">
+  <button class="btn" data-act="preview">Preview</button>
+  <button class="btn primary" data-act="publish">Publish</button>
+</div>
+<div class="mobile-preview" id="mprev" hidden><button class="btn close" data-act="close-preview">Close</button><div class="phone"><iframe id="mframe" title="Live preview"></iframe></div></div>
+
+<dialog id="pub" aria-labelledby="pubT">
+  <h2 id="pubT">Publish your page</h2>
+  <p style="margin:0;color:var(--muted)">Your page lives in the file <b>profile.json</b> in your GitHub repo. Replace it with this version:</p>
+  <ol>
+    <li>Tap <b>Copy profile.json</b>.</li>
+    <li>Tap <b>Open in GitHub</b>. Select all the text there and paste.</li>
+    <li>Tap <b>Commit changes</b>. Your page updates in about a minute.</li>
+  </ol>
+  <div class="row"><button class="btn primary" data-act="copy">Copy profile.json</button><a class="btn" id="ghEdit" target="_blank" rel="noopener">Open in GitHub</a><button class="btn" data-act="download">Download</button></div>
+  <form method="dialog" style="margin-top:14px"><button class="btn" style="width:100%">Done</button></form>
+</dialog>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="render.js"></script>
+<script>
+'use strict';
+const { THEMES, SOCIALS, renderPage } = window.MyLinks;
+const DRAFT = 'mylinks.draft';
+const MAIN_SOCIALS = ['instagram', 'youtube', 'x', 'linkedin', 'whatsapp', 'email'];
+const PLACE = { instagram: 'handle', youtube: 'channel handle', x: 'handle', threads: 'handle', github: 'username', linkedin: 'profile name or link',
+  whatsapp: '+91 98765 43210', telegram: 'username', email: 'you@example.com', phone: '+91 98765 43210', spotify: 'profile link', facebook: 'page name or link', discord: 'invite link', website: 'https://…' };
+const repo = (() => { const m = location.hostname.match(/^([a-z0-9-]+)\.github\.io$/i); const seg = location.pathname.split('/').filter(Boolean);
+  if (!m) return 'maheshsurada9434/mylinks'; const name = seg.length > 1 ? seg[0] : `${m[1]}.github.io`; return `${m[1]}/${name}`; })();
+let profile = null, published = null;
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const get = (o, k) => k.split('.').reduce((a, x) => (a || {})[x], o);
+function set(o, k, v) { const ks = k.split('.'); let a = o; ks.slice(0, -1).forEach(x => a = a[x] = a[x] && typeof a[x] === 'object' ? a[x] : {}); a[ks.at(-1)] = v; }
+function toast(m) { const t = document.getElementById('toast'); t.textContent = m; t.classList.add('show'); clearTimeout(toast.x); toast.x = setTimeout(() => t.classList.remove('show'), 1800); }
+
+async function init() {
+  try { const r = await fetch('../profile.json', { cache: 'no-store' }); if (r.ok) published = await r.json(); } catch (e) {}
+  let draft = null; try { draft = JSON.parse(localStorage.getItem(DRAFT) || 'null'); } catch (e) {}
+  profile = draft || structuredClone(published || { name: 'Your Name', theme: 'aurora', links: [{ title: 'My first link', url: 'https://example.com' }], socials: {}, contact: true });
+  delete profile.siteUrl;
+  profile.links = Array.isArray(profile.links) ? profile.links : [];
+  profile.socials = profile.socials || {};
+  document.getElementById('ghEdit').href = `https://github.com/${repo}/edit/main/profile.json`;
+  drawStatic(); fillFields(); drawLinks(); update(false);
+}
+function drawStatic() {
+  document.getElementById('themes').innerHTML = Object.entries(THEMES).map(([k, t]) =>
+    `<button class="theme" data-theme="${k}" aria-pressed="false"><span style="background:${t.bg};--chip:${t.vars.card === 'transparent' ? t.vars.accent : t.vars.accent}"></span>${t.label}</button>`).join('');
+  const field = k => `<label class="f">${SOCIALS[k][0]}<input type="text" data-k="socials.${k}" placeholder="${PLACE[k]}"></label>`;
+  document.getElementById('socials').innerHTML = MAIN_SOCIALS.map(field).join('');
+  document.getElementById('socials-more').innerHTML = Object.keys(SOCIALS).filter(k => !MAIN_SOCIALS.includes(k)).map(field).join('');
+}
+function fillFields() {
+  document.querySelectorAll('[data-k]').forEach(el => {
+    const v = get(profile, el.dataset.k);
+    if (el.type === 'checkbox') el.checked = v !== false; else el.value = v ?? '';
+  });
+  document.querySelectorAll('[data-theme]').forEach(b => b.setAttribute('aria-pressed', b.dataset.theme === (profile.theme || 'aurora')));
+}
+function drawLinks() {
+  document.getElementById('links').innerHTML = profile.links.map((l, i) => `<div class="link" data-i="${i}">
+    <input type="text" class="em" data-l="emoji" value="${esc(l.emoji || '')}" placeholder="🔗" aria-label="Emoji" maxlength="4">
+    <div class="stack">
+      <input type="text" data-l="title" value="${esc(l.title || '')}" placeholder="Title" aria-label="Link title">
+      <input type="url" data-l="url" value="${esc(l.url || '')}" placeholder="https://…" aria-label="Link address">
+      <input type="text" data-l="subtitle" value="${esc(l.subtitle || '')}" placeholder="Short description (optional)" aria-label="Link description">
+      <label class="tog"><input type="checkbox" data-l="highlight" ${l.highlight ? 'checked' : ''}>Make it stand out</label>
+    </div>
+    <div class="tools"><button class="mini" data-act="up" aria-label="Move up" ${i === 0 ? 'disabled' : ''}>↑</button><button class="mini" data-act="down" aria-label="Move down" ${i === profile.links.length - 1 ? 'disabled' : ''}>↓</button><button class="mini del" data-act="del" aria-label="Remove link">×</button></div>
+  </div>`).join('') || '<p class="hint" style="margin:0">No links yet.</p>';
+}
+let t;
+function update(saveDraft = true) {
+  const html = renderPage(profile, { repo });
+  document.getElementById('frame').srcdoc = html;
+  if (!document.getElementById('mprev').hidden) document.getElementById('mframe').srcdoc = html;
+  if (saveDraft) { clearTimeout(t); t = setTimeout(() => { try { localStorage.setItem(DRAFT, JSON.stringify(profile)); } catch (e) {} }, 300); }
+}
+function clean() {
+  const p = structuredClone(profile);
+  Object.keys(p.socials).forEach(k => { if (!String(p.socials[k] || '').trim()) delete p.socials[k]; });
+  p.links = p.links.filter(l => l.title || l.url).map(l => { const o = { title: l.title || '', url: l.url || '' }; if (l.emoji) o.emoji = l.emoji; if (l.subtitle) o.subtitle = l.subtitle; if (l.highlight) o.highlight = true; return o; });
+  if (p.upi && !p.upi.id) delete p.upi;
+  return JSON.stringify(p, null, 2) + '\n';
+}
+
+document.addEventListener('input', e => {
+  const el = e.target;
+  if (el.dataset.k && el.type !== 'checkbox') { set(profile, el.dataset.k, el.value); update(); }
+  if (el.dataset.l && el.type !== 'checkbox') { profile.links[+el.closest('[data-i]').dataset.i][el.dataset.l] = el.value; update(); }
+});
+document.addEventListener('change', e => {
+  const el = e.target;
+  if (el.dataset.k && el.type === 'checkbox') { set(profile, el.dataset.k, el.checked); update(); }
+  if (el.dataset.l === 'highlight') { profile.links[+el.closest('[data-i]').dataset.i].highlight = el.checked; update(); }
+});
+document.addEventListener('click', async e => {
+  const th = e.target.closest('[data-theme]');
+  if (th) { profile.theme = th.dataset.theme; fillFields(); update(); return; }
+  const a = e.target.closest('[data-act]'); if (!a) return;
+  const act = a.dataset.act; const row = a.closest('[data-i]'); const i = row ? +row.dataset.i : -1;
+  if (act === 'add-link') { profile.links.push({ emoji: '', title: '', url: '' }); drawLinks(); update(); document.querySelector(`[data-i="${profile.links.length - 1}"] [data-l="title"]`).focus(); }
+  else if (act === 'del') { profile.links.splice(i, 1); drawLinks(); update(); }
+  else if (act === 'up' && i > 0) { [profile.links[i - 1], profile.links[i]] = [profile.links[i], profile.links[i - 1]]; drawLinks(); update(); }
+  else if (act === 'down' && i < profile.links.length - 1) { [profile.links[i + 1], profile.links[i]] = [profile.links[i], profile.links[i + 1]]; drawLinks(); update(); }
+  else if (act === 'publish') document.getElementById('pub').showModal();
+  else if (act === 'copy') { try { await navigator.clipboard.writeText(clean()); toast('Copied. Now open GitHub and paste'); } catch (er) { toast('Copy failed. Use Download instead'); } }
+  else if (act === 'download') { const b = new Blob([clean()], { type: 'application/json' }); const l = document.createElement('a'); l.href = URL.createObjectURL(b); l.download = 'profile.json'; l.click(); setTimeout(() => URL.revokeObjectURL(l.href), 1000); }
+  else if (act === 'preview') { const m = document.getElementById('mprev'); m.hidden = false; document.getElementById('mframe').srcdoc = renderPage(profile, { repo }); }
+  else if (act === 'close-preview') document.getElementById('mprev').hidden = true;
+  else if (act === 'reset') { if (!confirm('Discard your changes and start again from the published page?')) return; try { localStorage.removeItem(DRAFT); } catch (er) {} location.reload(); }
+});
+init();
+</script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+name: Idea or new theme
+description: Suggest a feature or a theme
+labels: [enhancement]
+body:
+  - type: textarea
+    id: idea
+    attributes:
+      label: What would you like your page to do?
+    validations:
+      required: true
+  - type: checkboxes
+    id: help
+    attributes:
+      label: Want to build it?
+      options:
+        - label: I'd like to open a PR for this

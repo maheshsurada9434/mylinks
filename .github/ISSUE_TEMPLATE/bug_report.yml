@@ -1,0 +1,27 @@
+name: Bug report
+description: Something isn't working
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What did you do, what did you expect, and what happened instead?
+    validations:
+      required: true
+  - type: dropdown
+    id: where
+    attributes:
+      label: Where?
+      options: [My published page, The editor, The build or Actions]
+    validations:
+      required: true
+  - type: input
+    id: device
+    attributes:
+      label: Phone or browser
+      placeholder: e.g. Pixel 8, Android 16 / Chrome 130
+  - type: textarea
+    id: shots
+    attributes:
+      label: Screenshot or screen recording (optional)
