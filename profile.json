@@ -1,25 +1,14 @@
 {
-  "name": "Aanya Rao",
-  "handle": "aanya.makes",
-  "bio": "Design student. I make study notes, sketch reels and tiny tools.\nOpen to freelance projects.",
-  "location": "Bengaluru, India",
+  "name": "Andaman Vlogger",
+  "handle": "",
+  "bio": "Latest government job updates and vacancies for the Andaman & Nicobar Islands.",
+  "location": "Andaman & Nicobar Islands, India",
   "avatar": "",
   "theme": "aurora",
   "links": [
-    { "emoji": "📒", "title": "My free study notes", "subtitle": "Design history, colour theory and more", "url": "https://example.com/notes", "highlight": true },
-    { "emoji": "🎨", "title": "Portfolio", "url": "https://example.com/portfolio" },
-    { "emoji": "🛍️", "title": "Sticker shop", "subtitle": "Ships across India", "url": "https://example.com/shop" },
-    { "emoji": "☕", "title": "Book a 1:1 portfolio review", "url": "https://example.com/book" }
+    { "emoji": "💼", "title": "Andaman Jobs", "subtitle": "Latest vacancies and notifications", "url": "https://andamanjobs.in", "highlight": true }
   ],
-  "socials": {
-    "instagram": "aanya.makes",
-    "youtube": "aanyamakes",
-    "linkedin": "aanya-rao",
-    "github": "aanyarao",
-    "whatsapp": "+91 98765 43210",
-    "email": "hello@example.com"
-  },
+  "socials": {},
   "youtube": "",
-  "upi": { "id": "aanya@upi", "note": "Liked my notes? Buy me a chai" },
   "contact": true
 }
